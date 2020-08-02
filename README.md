@@ -1,1 +1,1 @@
-# Ionic-simpke-calculator-with-dark-mode
+# Ionic-simple-calculator-with-dark-mode
