@@ -9,8 +9,12 @@ export class HomePage {
 	index = 0;
 	firstNumber: string = '0';
 	secondNumber: string = '0';
-	result: Number;
-	actions = ['1', '+', '2'];
+	oldString: string;
+	currentString: string = '0';
+	result: number;
+	oldResult: number;
+	action: boolean = false;
+	actionString: string;
 	constructor() {
 		document.body.setAttribute('class', 'dark');
 	}
@@ -31,143 +35,62 @@ export class HomePage {
 			document.body.setAttribute('class', 'light');
 		}
 	} //colorTest
+	CalculationReset() {
+		this.firstNumber = '0';
+		this.secondNumber = '0';
+		this.action = false;
+		this.oldString = this.currentString;
+		this.oldResult = this.result;
+		this.currentString = '0';
+	} //CalculationRest
+	Result(firstString: string, secondString: string) {
+		const num1 = Number(firstString);
+		const num2 = Number(secondString);
+		if (this.actionString == '/') {
+			this.result = num1 / num2;
+		} else if (this.actionString == '*') {
+			this.result = num1 * num2;
+		} else if (this.actionString == '-') {
+			this.result = num1 - num2;
+		} else {
+			this.result = num1 + num2;
+		}
+		this.CalculationReset();
+	} //Result
 	Input(value) {
 		console.log(value);
-		if (value == 'AC') {
-			this.index = 0;
+		if (this.result != undefined && value != 'ans') {
+			this.result = undefined;
 		}
-		if (value == 'del') {
-			if (this.index != 0) {
-				this.index -= 1;
+		if (value == '/' || value == '*' || value == '+' || value == '-') {
+			this.action = true;
+			this.actionString = value;
+			this.currentString += value;
+		} else if (
+			value == 'AC' ||
+			value == 'del' ||
+			value == 'ans' ||
+			value == '%' ||
+			value == 'res'
+		) {
+			if (value == 'AC') {
+				this.CalculationReset;
+				this.currentString = '0';
 			}
-		}
-		if (value == 'percent') {
-			if (this.index == 0) {
-				this.actions[1] = '%';
-				this.index += 1;
+			if (value == '%') {
+				this.Result(this.firstNumber, this.secondNumber);
+				this.result = this.result / 100;
 			}
-		}
-		if (value == 'div') {
-			if (this.index == 0) {
-				this.actions[1] = '/';
-				this.index += 1;
+			if (value == 'ans') {
+				this.currentString = this.result.toString();
+				this.firstNumber = this.result.toString();
 			}
-		}
-		if (value == 'mul') {
-			if (this.index == 0) {
-				this.actions[1] = '*';
-				this.index += 1;
+			if (value == 'res') {
+				this.Result(this.firstNumber, this.secondNumber);
 			}
-		}
-		if (value == 'min') {
-			if (this.index == 0) {
-				this.actions[1] = '-';
-				this.index += 1;
-			}
-		}
-		if (value == 'plu') {
-			if (this.index == 0) {
-				this.actions[1] = '+';
-				this.index += 1;
-			}
-		}
-		if (value == 'ans') {
-			this.firstNumber = this.result.toString();
-			this.index += 1;
-			this.result = 0;
-		}
-		if (value == 'res') {
-			console.log(this.firstNumber + ' ' + this.secondNumber);
-			if (this.actions[1] == '+') {
-				this.result = Number(this.firstNumber) + Number(this.secondNumber);
-			}
-			if (this.actions[1] == '-') {
-				this.result = Number(this.firstNumber) - Number(this.secondNumber);
-			}
-			if (this.actions[1] == '/') {
-				this.result = Number(this.firstNumber) / Number(this.secondNumber);
-			}
-			if (this.actions[1] == '*') {
-				this.result = Number(this.firstNumber) * Number(this.secondNumber);
-			}
-			console.log(this.result);
-			this.firstNumber = '0';
-			this.secondNumber = '0';
-			this.index = 0;
-		}
-		/*---------------------------numbers-----------------------------------*/
-		if (value == '.') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '1') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '2') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '3') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '4') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '5') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '6') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '7') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '8') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '9') {
-			if (this.index == 0) {
-				this.firstNumber += value;
-			} else {
-				this.secondNumber += value;
-			}
-		}
-		if (value == '0') {
-			if (this.index == 0) {
+		} else {
+			this.currentString += value;
+			if (this.action == false) {
 				this.firstNumber += value;
 			} else {
 				this.secondNumber += value;
