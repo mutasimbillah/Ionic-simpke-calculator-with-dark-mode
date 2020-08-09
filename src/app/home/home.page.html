@@ -20,11 +20,11 @@
 <ion-content [fullscreen]="true">
 	<div id="container">
 		<div id="calculation_area">
-			<h2 id="firstNumber" *ngIf="oldString">
-				{{oldString}} = {{oldResult}}
+			<h2 id="firstNumber" *ngIf="lastResult">
+				{{lastInputs}} = {{lastResult}}
 			</h2>
-			<h2 id="secondNumber" *ngIf="currentString">{{currentString}}</h2>
-			<div *ngIf="result"><h1>{{result}}</h1></div>
+			<h2 id="secondNumber" *ngIf="dataInputs">{{dataInputs}}</h2>
+			<div *ngIf="result"><h1>ANS : {{result}}</h1></div>
 		</div>
 		<div id="button_area">
 			<ion-row>

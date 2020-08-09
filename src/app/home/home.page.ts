@@ -6,15 +6,15 @@ import { Component } from '@angular/core';
 	styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-	index = 0;
-	firstNumber: string = '0';
-	secondNumber: string = '0';
-	oldString: string;
-	currentString: string = '0';
-	result: number;
-	oldResult: number;
-	action: boolean = false;
-	actionString: string;
+	lastInputs: string = '';
+	dataInputs: string = '';
+	currentNumber: string = '';
+	actions = [];
+	allNumbers = [];
+	actionIndex = 0;
+	result = 0;
+	lastResult = 0;
+	ansActive = false;
 	constructor() {
 		document.body.setAttribute('class', 'dark');
 	}
@@ -35,66 +35,67 @@ export class HomePage {
 			document.body.setAttribute('class', 'light');
 		}
 	} //colorTest
-	CalculationReset() {
-		this.firstNumber = '0';
-		this.secondNumber = '0';
-		this.action = false;
-		this.oldString = this.currentString;
-		this.oldResult = this.result;
-		this.currentString = '0';
-	} //CalculationRest
-	Result(firstString: string, secondString: string) {
-		const num1 = Number(firstString);
-		const num2 = Number(secondString);
-		if (this.actionString == '/') {
-			this.result = num1 / num2;
-		} else if (this.actionString == '*') {
-			this.result = num1 * num2;
-		} else if (this.actionString == '-') {
-			this.result = num1 - num2;
+	ResrtAll() {
+		this.dataInputs = '';
+		this.currentNumber = '';
+		this.actions = [];
+		this.allNumbers = [];
+		this.actionIndex = 0;
+		this.ansActive = false;
+	}
+	InsertCurrentNumber() {
+		this.allNumbers.push(Number(this.currentNumber));
+		this.currentNumber = '';
+	} //InsertCurrentNumber
+	CalculateResult(num: number, act: string) {
+		if (act == '+') {
+			this.result += num;
+		} else if (act == '-') {
+			this.result -= num;
+		} else if (act == '/') {
+			this.result /= num;
 		} else {
-			this.result = num1 + num2;
+			this.result *= num;
 		}
-		this.CalculationReset();
-	} //Result
+	} //CalculateResult
 	Input(value) {
 		console.log(value);
-		if (this.result != undefined && value != 'ans') {
-			this.result = undefined;
-		}
+		this.result = 0;
+		this.actionIndex++;
 		if (value == '/' || value == '*' || value == '+' || value == '-') {
-			this.action = true;
-			this.actionString = value;
-			this.currentString += value;
-		} else if (
-			value == 'AC' ||
-			value == 'del' ||
-			value == 'ans' ||
-			value == '%' ||
-			value == 'res'
-		) {
-			if (value == 'AC') {
-				this.CalculationReset;
-				this.currentString = '0';
-			}
-			if (value == '%') {
-				this.Result(this.firstNumber, this.secondNumber);
-				this.result = this.result / 100;
-			}
-			if (value == 'ans') {
-				this.currentString = this.result.toString();
-				this.firstNumber = this.result.toString();
-			}
-			if (value == 'res') {
-				this.Result(this.firstNumber, this.secondNumber);
-			}
-		} else {
-			this.currentString += value;
-			if (this.action == false) {
-				this.firstNumber += value;
+			if (this.ansActive == true) {
+				this.actions.push(value);
+				this.ansActive = false;
 			} else {
-				this.secondNumber += value;
+				this.InsertCurrentNumber();
+				this.actions.push(value);
 			}
+			this.dataInputs += value;
+		} else if (value == 'AC') {
+			this.ResrtAll();
+		} else if (value == 'res') {
+			this.InsertCurrentNumber();
+			console.log(this.allNumbers, this.actions);
+			let ln = this.actions.length;
+			for (let i = 0; i < ln; i++) {
+				if (i == 0) {
+					this.result = this.allNumbers[i];
+				}
+				let num = this.allNumbers[i + 1];
+				let act = this.actions[i];
+				this.CalculateResult(num, act);
+			} //for
+			this.lastInputs = this.dataInputs;
+			this.lastResult = this.result;
+			this.ResrtAll();
+		} else if (value == 'ans') {
+			console.log('YES');
+			this.dataInputs = this.lastResult.toString();
+			this.allNumbers.push(this.lastResult);
+			this.ansActive = true;
+		} else {
+			this.dataInputs += value;
+			this.currentNumber += value;
 		}
 	} //Input
 } //HomePage
